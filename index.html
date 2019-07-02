@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>Disco Collector</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style type="text/css">
+        .counters {
+            width: 200px;
+            height: 160px;
+            border: solid black 5px;
+            margin: 5px;
+        }
+
+        .jumbotron {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="jumbotron pb-5">
+        <h1 class="display-4">Take A Chance On Me</h1>
+        <p>You will be given a random number at the start of the game. Click on the members of ABBA to add an unknown
+            amount of points to your total score.</p>
+        </p>
+        <p>You win the game by matching your total score to the random number, and you lose the game if your total score
+            goes above the random number.</p>
+        <p>The value of each member of ABBA is hidden from you until you click on their face. Each time the game
+            restarts, the values of each member of ABBA will change.</p>
+
+
+    </div>
+
+    <div class="container">
+
+        <div class="row">
+            <div class="col-lg">
+                <h2>Goal: <span id="final-target"></span></h1>
+                <h2>Your Sum So Far: <span id="runningSum"></span></h1>
+                <h3>Wins: <span id="outWins"></span></h1>
+                <h3>Losses: <span id="outLosses"></span></h1>
+            </div>
+            <div class="col-lg">
+                <div id="counters"></div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            var guessMe = (Math.floor(Math.random() * (120 - 19)) + 19);
+            console.log(guessMe);
+            var runningSum = 0;
+            var wins = 0;
+            var losses = 0;
+
+            var imgGallery = ["assets/images/agnetha.jpg", "assets/images/bjorn.jpg", "assets/images/benny.jpg", "assets/images/frida.jpg"];
+            var photoVals = []
+
+            function resetGame() {
+                //sets guessMe to a random number between 19 and 120
+                guessMe = Math.floor(Math.random() * (120 - 19)) + 19;
+                //clears out the user's guesses so far
+                runningSum = 0;
+                //displays the new random number and running total on the DOM
+                $("#final-target").text(guessMe);
+                $("#runningSum").text(runningSum);
+                //wipes out the counters div
+                $("#counters").empty();
+                //refills the counters div
+                setupValue();
+                console.log("Agnetha is worth " + photoVals[0]);
+                console.log("Björn is worth " + photoVals[1]);
+                console.log("Benny is worth " + photoVals[2]);
+                console.log("Frida is worth " + photoVals[3]);
+
+            }
+
+
+            function setupValue() {
+                //creates an array of four random values and assigns one to each img
+                for (var i = 0; i < imgGallery.length; i++) {
+                    //creates an img on the page
+                    var photoIcon = $("<img>");
+                    //adds a class to the new img
+                    photoIcon.addClass("counters");
+                    //assigns one of the images from the imgGallery array in order
+                    photoIcon.attr("src", imgGallery[i]);
+                    //assigns a random number 1-12 to a new field data-imgvalue
+                    var randValue = (Math.floor(Math.random() * 12) + 1);
+                    photoIcon.attr("data-imgvalue", randValue);
+                    //putting them into an array just to check
+                    photoVals.push(randValue);
+                    $("#counters").append(photoIcon);
+
+
+
+                }
+
+                // //each click on an image will augment the running sum
+                $(".counters").on("click", function () {
+                    console.log("you clicked " + (parseInt($(this).attr("data-imgvalue"))));
+                    runningSum = runningSum + (parseInt($(this).attr("data-imgvalue")));
+                    $("#runningSum").text(runningSum);
+
+                    if (runningSum === guessMe) {
+                        wins++;
+                        $("#outWins").text(wins);
+                        resetGame();
+                    }
+
+                    else if (runningSum > guessMe) {
+                        losses++;
+                        $("#outLosses").text(losses);
+                        resetGame();
+                    }
+
+
+
+                })
+
+            }
+
+
+            //fills a random number in for the user to reach
+            $("#final-target").text(guessMe);
+            setupValue();
+
+            // // //each click on an image will augment the running sum
+            //             $(".counters").on("click", function () {
+            //     console.log("you clicked " + (parseInt($(this).attr("data-imgvalue"))));
+            //     runningSum = runningSum + (parseInt($(this).attr("data-imgvalue")));
+            //     $("#runningSum").text(runningSum);
+
+            //     if (runningSum === guessMe) {
+            //         wins++;
+            //         $("#outWins").text(wins);
+            //         resetGame();
+            //     }
+
+            //     else if (runningSum > guessMe) {
+            //         losses++;
+            //         $("#outLosses").text(losses);
+            //         resetGame();
+            //     }
+
+
+
+        })
+
+    </script>
+</body>
+
+</html>
